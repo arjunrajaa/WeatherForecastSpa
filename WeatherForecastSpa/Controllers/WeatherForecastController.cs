@@ -4,36 +4,38 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using WeatherForecast.Accessor.Interface;
+using WeatherForecast.Common;
 
 namespace WeatherForecastSpa.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
     public class WeatherForecastController : ControllerBase
     {
-        private static readonly string[] Summaries = new[]
-        {
-            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-        };
-
         private readonly ILogger<WeatherForecastController> _logger;
+        private readonly IWeatherRepo _weatherRepo;
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger)
+        public WeatherForecastController(ILogger<WeatherForecastController> logger, IWeatherRepo weatherRepo)
         {
             _logger = logger;
+            _weatherRepo = weatherRepo;
+
         }
 
+        [Route("api/[controller]/current")]
         [HttpGet]
-        public IEnumerable<WeatherForecast> Get()
+        public async Task<WeatherResponse> GetCurrentWeather(string city)
         {
-            var rng = new Random();
-            return Enumerable.Range(1, 5).Select(index => new WeatherForecast
-            {
-                Date = DateTime.Now.AddDays(index),
-                TemperatureC = rng.Next(-20, 55),
-                Summary = Summaries[rng.Next(Summaries.Length)]
-            })
-            .ToArray();
+            var weatherInfo = await _weatherRepo.GetWeatherInfo(city);
+            return weatherInfo;
+        }
+
+        [Route("api/[controller]/forecast")]
+        [HttpGet]
+        public async Task<RootWeather> GetForecastWeather(string city)
+        {
+            var weatherInfo = await _weatherRepo.GetWeatherForecastInfo(city);
+            return weatherInfo;
         }
     }
 }
