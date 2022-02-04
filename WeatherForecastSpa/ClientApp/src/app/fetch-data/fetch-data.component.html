@@ -1,24 +1,110 @@
 <h1 id="tableLabel">Weather forecast</h1>
 
-<p>This component demonstrates fetching data from the server.</p>
+<form (ngSubmit)='searchWeather()' #searchForm='ngForm'>
+  <input type="text" class="form-control input-lg" name="loc" [(ngModel)]="loc" />
+  <button class="button" type="submit">Search</button>
+</form>
 
-<p *ngIf="!forecasts"><em>Loading...</em></p>
+<!--<form class="form-inline md-form form-sm">
+  <mdb-icon fas icon="search" aria-hidden="true"></mdb-icon>
+  <input class="form-control form-control-sm ml-3 w-75" type="text" placeholder="Search" aria-label="Search"
+         mdbInput>
+</form>-->
 
-<table class='table table-striped' aria-labelledby="tableLabel" *ngIf="forecasts">
-  <thead>
-    <tr>
-      <th>Date</th>
-      <th>Temp. (C)</th>
-      <th>Temp. (F)</th>
-      <th>Summary</th>
-    </tr>
-  </thead>
+
+<table class='table table-striped' aria-labelledby="tableLabel" *ngIf='resultFound()'>
   <tbody>
-    <tr *ngFor="let forecast of forecasts">
-      <td>{{ forecast.date }}</td>
-      <td>{{ forecast.temperatureC }}</td>
-      <td>{{ forecast.temperatureF }}</td>
-      <td>{{ forecast.summary }}</td>
+    <tr>
+      <td>
+        <h3>Current Temperature:</h3>
+      </td>
+      <td>
+        <h3>
+          {{currentWeather.main?.temp | number:'1.0-0'}}<sup>o</sup>C
+
+          <img src="http://openweathermap.org/img/w/{{currentWeather.weather[0].icon}}.png">
+        </h3>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <h3>Maximum Temperature:</h3>
+      </td>
+      <td>
+        <h3>{{currentWeather.main?.temp_Max | number:'1.0-0'}}<sup>o</sup>C</h3>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <h3>Minimum Temperature:</h3>
+      </td>
+      <td>
+        <h3>{{currentWeather.main?.temp_Min | number:'1.0-0'}}<sup>o</sup>C</h3>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <h3>Clouds:</h3>
+      </td>
+      <td>
+        <h3>{{currentWeather.clouds?.all}}%</h3>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <h3>Humidity</h3>
+      </td>
+      <td>
+        <h3>{{currentWeather.main?.humidity}}%</h3>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <h3>Pressure</h3>
+      </td>
+      <td>
+        <h3>{{currentWeather.main?.pressure}}mb</h3>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <h3>Sunrise</h3>
+      </td>
+      <td>
+        <h3>{{currentWeather.sys?.sunrise*1000 | date:'long'}}</h3>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <h3>Sunset</h3>
+      </td>
+      <td>
+        <h3>{{currentWeather.sys?.sunset*1000 | date:'long'}}</h3>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <h3>Visibility</h3>
+      </td>
+      <td>
+        <h3>{{currentWeather.visibility}}m</h3>
+      </td>
     </tr>
   </tbody>
 </table>
+<div *ngIf='resultFound()'>
+  <h3>3 hour Forecast</h3>
+  <div class="timeline">
+
+    <div *ngFor="let item of forecastWeather.list?.slice(0, 10) ">
+      <div>
+        <div>{{item.dt*1000 | date:'HH:mm'}} </div>
+        <div>{{item.main?.temp | number:'1.0-0'}}<sup>o</sup>C</div>
+      </div>
+
+    </div>
+  </div>
+ </div>
+  <!--<div *ngIf='!resultFound()'>
+    <h1 class="center">{{msg || 'Failed to get weather.'}}</h1>
+  </div>-->
