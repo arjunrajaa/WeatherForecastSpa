@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -9,8 +10,8 @@ using WeatherForecast.Common;
 
 namespace WeatherForecastSpa.Controllers
 {
-    [ApiController]
-    public class WeatherForecastController : ControllerBase
+    [Authorize]
+    public class WeatherForecastController : Controller
     {
         private readonly ILogger<WeatherForecastController> _logger;
         private readonly IWeatherRepo _weatherRepo;
