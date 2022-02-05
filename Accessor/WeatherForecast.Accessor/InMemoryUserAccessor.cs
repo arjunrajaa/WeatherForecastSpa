@@ -19,6 +19,12 @@ namespace WeatherForecast.Accessor
                     Username =  "arjun",
                     Password = "arjun",
                     EmailAddress = "arjunrajaa@gmail.com"
+                },
+                new UserModel()
+                {
+                    Username =  "test123",
+                    Password = "test123",
+                    EmailAddress = "test123@testdomain.com"
                 }
             };
         }
