@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -11,15 +12,23 @@ namespace WeatherForecast.Accessor
 {
     public class OpenWeatherApi : IWeatherRepo
     {
-        private const string _apiKey = "5ce4f9d7b705a8d978faff161fe15265";
+        private readonly IConfiguration _config;
+        private readonly string _apiKey;
+        private readonly string _baseUrl;
+
+        public OpenWeatherApi(IConfiguration config)
+        {
+            _config = config;
+            _apiKey = _config["OpenWeather:ApiKey"];
+            _baseUrl = _config["OpenWeather:BaseUrl"];
+
+        }
 
         public async Task<WeatherResponse> GetWeatherInfo(string city)
         {
             HttpClient client = new HttpClient();
-            client.BaseAddress = new Uri("http://api.openweathermap.org");
-
             
-            var response = await client.GetAsync($"http://api.openweathermap.org/data/2.5/weather?q={city}&units=metric&APPID={_apiKey}");
+            var response = await client.GetAsync($"{_baseUrl}/weather?q={city}&units=metric&APPID={_apiKey}");
 
             var stringResult = await response.Content.ReadAsStringAsync();
 
@@ -30,8 +39,8 @@ namespace WeatherForecast.Accessor
         public async Task<RootWeather> GetWeatherForecastInfo(string city)
         {
             HttpClient client = new HttpClient();
-            client.BaseAddress = new Uri("http://api.openweathermap.org");
-            var response = await client.GetAsync($"http://api.openweathermap.org/data/2.5/forecast?q={city}&units=metric&APPID={_apiKey}");
+
+            var response = await client.GetAsync($"{_baseUrl}/forecast?q={city}&units=metric&APPID={_apiKey}");
 
             var stringResult = await response.Content.ReadAsStringAsync();
 
